@@ -1,84 +1,43 @@
-# Dockerized mini FDM with HAProxy and Let's Encrypt automatic certificate renewal capabilities
+# Dockerized mini FDM
 
 This container provides an HAProxy instance with Let's Encrypt certificates generated
-at startup, as well as renewed (if necessary) once a week with an internal cron job.
+at startup, as well as renewed (if necessary) once a week with an internal cron job. It calls Flux API every few munites and updates HAProxy server list for the provided flux dAPP.
 
 ## Usage
 
-### Pull from Github Packages ghcr.io:
+### Pull from Github Packages:
 
 ```
-docker pull ghcr.io/tomdess/docker-haproxy-certbot:master
+docker pull alihmahdavi/flux-lb:latest
 ```
 
 ### Build from Dockerfile:
 
 ```
-docker build -t docker-haproxy-certbot:latest .
+docker build -t flux-lb:latest .
 ```
 
 ### Run container:
 
-Example of run command (replace CERTS,EMAIL values and volume paths with yours)
+Example of run command (replace APP_NAME, APP_PORT, CERTS, EMAIL values and volume paths with yours)
 
 ```
 docker run --name lb -d \
-    -e CERT1=my-common-name.domain, my-alternate-name.domain \
+    -e APP_NAME=my-flux-app-name \
+    -e APP_PORT=my-flux-app-port \
+    -e CERT1=my-common-name.domain \
     -e EMAIL=my.email@my.domain \
     -e STAGING=false \
     -v /srv/letsencrypt:/etc/letsencrypt \
     -v /srv/haproxycfg/haproxy.cfg:/etc/haproxy/haproxy.cfg \
     --network my_network \
     -p 80:80 -p 443:443 \
-    ghcr.io/tomdess/docker-haproxy-certbot:master
-```
-
-### Run with docker-compose:
-
-Use the docker-compose.yml file in `run` directory (it creates 2 containers, the haproxy one and a nginx container linked in haproxy configuration for test purposes)
-
-```
-# docker-compose.yml file content:
-
-version: '3'
-services:
-    haproxy:
-        container_name: lb
-        environment:
-            - CERT1=mysite.com, www.mysite.com
-            - CERT2=yoursite.com, www.yoursite.com
-            - EMAIL=my.mail
-            - STAGING=false
-        volumes:
-            - '$PWD/data/letsencrypt:/etc/letsencrypt'
-            - '$PWD/data/haproxy.cfg:/etc/haproxy/haproxy.cfg'
-        networks:
-            - lbnet
-        ports:
-            - '80:80'
-            - '443:443'
-        image: 'ghcr.io/tomdess/docker-haproxy-certbot:master'
-    nginx:
-        container_name: www
-        networks:
-            - lbnet
-        image: nginx
-
-networks:
-  lbnet:
-  
-
-$ docker-compose up -d
-
+    alihmahdavi/flux-lb:latest
 ```
 
 ### Customizing Haproxy
 
-You will almost certainly want to create an image `FROM` this image or
-mount your `haproxy.cfg` at `/etc/haproxy/haproxy.cfg`.
-
-
-    docker run [...] -v <override-conf-file>:/etc/haproxy/haproxy.cfg ghcr.io/tomdess/docker-haproxy-certbot:master
+    docker run [...] -v <override-conf-file>:/etc/haproxy/haproxy.cfg alihmahdavi/flux-lb:latest
 
 The haproxy configuration provided file comes with the "resolver docker" directive to permit DNS runt-time resolution on backend hosts (see https://github.com/gesellix/docker-haproxy-network)
 
@@ -86,7 +45,4 @@ The haproxy configuration provided file comes with the "resolver docker" directi
 
 Once a week a cron job check for expiring certificates with certbot agent and reload haproxy if a certificate is renewed. No containers restart needed.
 
-### Credits
-
-Most of ideas taken from https://github.com/BradJonesLLC/docker-haproxy-letsencrypt
 

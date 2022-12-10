@@ -1,4 +1,4 @@
-# Dockerized HAProxy with Let's Encrypt automatic certificate renewal capabilities
+# Dockerized mini FDM with HAProxy and Let's Encrypt automatic certificate renewal capabilities
 
 This container provides an HAProxy instance with Let's Encrypt certificates generated
 at startup, as well as renewed (if necessary) once a week with an internal cron job.

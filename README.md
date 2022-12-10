@@ -28,10 +28,7 @@ docker run --name lb -d \
     -e CERT1=my-common-name.domain \
     -e EMAIL=my.email@my.domain \
     -e STAGING=false \
-    -v /srv/letsencrypt:/etc/letsencrypt \
-    -v /srv/haproxycfg/haproxy.cfg:/etc/haproxy/haproxy.cfg \
-    --network my_network \
-    -p 80:80 -p 443:443 \
+    -p 80:80 -p 443:443 -p 8080:8080 \
     alihmahdavi/flux-lb:latest
 ```
 
@@ -39,10 +36,10 @@ docker run --name lb -d \
 
     docker run [...] -v <override-conf-file>:/etc/haproxy/haproxy.cfg alihmahdavi/flux-lb:latest
 
-The haproxy configuration provided file comes with the "resolver docker" directive to permit DNS runt-time resolution on backend hosts (see https://github.com/gesellix/docker-haproxy-network)
+The haproxy configuration provided file comes with the "resolver docker" directive to permit DNS run-time resolution on backend hosts (see https://github.com/gesellix/docker-haproxy-network)
 
 ### Renewal cron job
 
-Once a week a cron job check for expiring certificates with certbot agent and reload haproxy if a certificate is renewed. No containers restart needed.
+Once a week a cron job checks for expiring certificates with certbot agent and reload haproxy if a certificate is renewed. No container restart needed.
 
 

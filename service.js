@@ -59,7 +59,7 @@ async function updateList(){
       }
       console.log(config);
       fs.writeFileSync(configFile, config);
-      await cmdAsync('service haproxy reload');
+      await cmdAsync('supervisorctl signal USR1 haproxy');
     } catch(err){
       console.log(err);
     }

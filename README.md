@@ -36,8 +36,6 @@ docker run --name lb -d \
 
     docker run [...] -v <override-conf-file>:/etc/haproxy/haproxy.cfg alihmahdavi/flux-lb:latest
 
-The haproxy configuration provided file comes with the "resolver docker" directive to permit DNS run-time resolution on backend hosts (see https://github.com/gesellix/docker-haproxy-network)
-
 ### Renewal cron job
 
 Once a week a cron job checks for expiring certificates with certbot agent and reload haproxy if a certificate is renewed. No container restart needed.

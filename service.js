@@ -48,7 +48,10 @@ async function updateList(){
     try{
       const ipList = await getApplicationIP(appName);
       console.log(ipList);
-      while(!fs.existsSync(configFile)) await timer.setTimeout(500);
+      while(!fs.existsSync(configFile)) {
+        console.log(`${configFile} not found. trying again...`);
+        await timer.setTimeout(500);
+      }
       let config = await getHAConfig();
       
       for (let i = 0; i < ipList.length; i++) {

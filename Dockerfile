@@ -1,5 +1,19 @@
+FROM node:16-buster-slim AS node
+
+WORKDIR /app
+COPY service.js /app
+COPY package.json /app
+RUN npm install
+
 # start from debian 10 slim version
 FROM debian:buster-slim
+
+COPY --from=node /usr/lib /usr/lib
+COPY --from=node /usr/local/share /usr/local/share
+COPY --from=node /usr/local/lib /usr/local/lib
+COPY --from=node /usr/local/include /usr/local/include
+COPY --from=node /usr/local/bin /usr/local/bin
+COPY --from=node /app /app
 
 # install certbot, supervisor and utilities
 RUN apt-get update && apt-get install --no-install-recommends -yqq \

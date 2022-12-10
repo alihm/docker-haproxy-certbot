@@ -7,14 +7,14 @@ if [ -n "$CERT1" ] || [ -n "$CERT" ]; then
             --preferred-challenges http-01 \
             --staging \
             -d "${!certname}" --keep --expand --agree-tos --email "$EMAIL" \
-            || exit 2
+            #|| exit 2
         done
     else
         for certname in ${!CERT*}; do
           	certbot certonly --no-self-upgrade -n --text --standalone \
             --preferred-challenges http-01 \
             -d "${!certname}" --keep --expand --agree-tos --email "$EMAIL" \
-            || exit 1
+            #|| exit 1
         done
     fi
 

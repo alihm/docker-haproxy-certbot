@@ -64,7 +64,7 @@ COPY scripts/bootstrap.sh /
 
 RUN mkdir /jail
 
-EXPOSE 80 443
+EXPOSE 80 443 8080
 
 VOLUME /etc/letsencrypt
 
